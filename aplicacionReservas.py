@@ -24,7 +24,7 @@ while True:
         case 2:
             cant=cantidadReservas(agenda)
             print("\nIngrese la fecha de la reserva que desea modificar:\n")
-            r=cargarFecha(agenda,'existente')     
+            r=cargarFecha(agenda,'existente')                    #ya aca recibe la reserva entonces no hace falta volver a recuperarla.
             mod=input("\nQue desea modificar? (todo - actividad - prioridad - fecha): ").lower()
             if(mod == 'todo'):
                 print(f"\nReserva actual: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}")
@@ -54,10 +54,11 @@ while True:
             print(f"\nSe cancelo la reserva: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}")
             eliminarReserva(agenda,r)
         case 4:
-            print("\nLISTADO GENERAL DE RESERVAS: \nACTIVIDAD | PRIORIDAD | FECHA\n")
-            cant=cantidadReservas(agenda)
+            agendaaux=agenda.copy()
+            agendaaux=ordenarFechas(agendaaux)
+            print("\nLISTADO GENERAL DE RESERVAS ORDENADO POR FECHA: \nACTIVIDAD | PRIORIDAD | FECHA\n")
             for i in range (0,cant):
-                r=recuperarReserva(agenda,i)
+                r=recuperarReserva(agendaaux,i)
                 print(f"{verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}\n")    
             
     

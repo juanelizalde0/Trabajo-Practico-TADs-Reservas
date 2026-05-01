@@ -2,11 +2,13 @@
 def crearReserva():
     reserva=['','',0,0]
     return reserva
+
 #Carga una reserva con sus respectivos datos
 def cargarReserva(reserva, act, prior, fecha):
     reserva[0]=act
     reserva[1]=prior
     reserva[2]=fecha
+
 #Funciones para modificar parametros de una reserva
 def modReserva(reserva,nuevaA,nuevaP,nuevaFecha):
     reserva[0]=nuevaA
@@ -31,6 +33,4 @@ def verPrioridad(reserva):
 def verFecha(reserva):
     return reserva[2]
 
-def verHora(reserva):
-    return reserva[3]
 
