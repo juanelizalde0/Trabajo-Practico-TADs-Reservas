@@ -14,26 +14,53 @@ while True:
 
     match opcion:
         case 1:
-            reserva=crearReserva()
-            act,p,fecha=cargarDatos(agenda)
-            cargarReserva(reserva,act,p,fecha)
-            agregarReserva(agenda,reserva)
+            r=crearReserva()
+            act,p=cargarDatos()
+            f=cargarFecha(agenda,'nueva')
+            cargarReserva(r,act,p,f)
+            agregarReserva(agenda,r)
+            print(f"\nReserva cargada: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}\n")
 
         case 2:
             cant=cantidadReservas(agenda)
-            print("Ingrese la fecha de la reserva que desea modificar:")
-            dia = int(input("Día: "))
-            mes = int(input("Mes: "))
-            anio = int(input("Año: "))
-            hora = int(input("Hora: "))
-            minuto = int(input("Minuto: "))
-            f=datetime(anio,mes,dia,hora,minuto)
-            r=recorrerFecha(agenda,cant,f)
-            if(r!=None):
-                mod=input("Que desea modificar Todo - Actividad - Prioridad - Fecha")
-                if(mod=="Todo"):
-                    act,p,fecha=cargarDatos(agenda)
-                    modReserva(r,act,p,fecha)
+            print("\nIngrese la fecha de la reserva que desea modificar:\n")
+            r=cargarFecha(agenda,'existente')     
+            mod=input("\nQue desea modificar? (todo - actividad - prioridad - fecha): ").lower()
+            if(mod == 'todo'):
+                print(f"\nReserva actual: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}")
+                act,p=cargarDatos()
+                f=cargarFecha(agenda,'nueva')
+                modReserva(r,act,p,f)
+                print(f"\nReserva modificada: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}\n")
+            elif(mod=='actividad'):
+                print(f"\nReserva actual: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}")
+                act=input("Ingrese la nueva actividad: ")
+                modAct(r,act)
+                print(f"\nReserva modificada: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}\n")
+            elif(mod=='prioridad'):
+                print(f"\nReserva actual: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}")
+                p=input("Ingrese la nueva prioridad: ")
+                modPrior(r,p)
+                print(f"\nReserva modificada: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}\n")
+            elif(mod=='fecha'):
+                print(f"\nReserva actual: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}")
+                f=cargarFecha(agenda,'nueva')
+                modFecha(r,f)  
+                print(f"\nReserva modificada: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}\n")
+        case 3: 
+            cant=cantidadReservas(agenda)
+            print("\nIngrese la fecha de la reserva que desea cancelar:\n")
+            r=cargarFecha(agenda,'existente')
+            print(f"\nSe cancelo la reserva: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}")
+            eliminarReserva(agenda,r)
+        case 4:
+            print("\nLISTADO GENERAL DE RESERVAS: \nACTIVIDAD | PRIORIDAD | FECHA\n")
+            cant=cantidadReservas(agenda)
+            for i in range (0,cant):
+                r=recuperarReserva(agenda,i)
+                print(f"{verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}\n")    
+            
+    
 
         
 
