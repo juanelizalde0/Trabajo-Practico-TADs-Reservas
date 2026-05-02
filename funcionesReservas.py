@@ -40,8 +40,8 @@ def cargarFecha(agenda,modo):           #pide al usuario que ingrese una fecha, 
 def ordenarFechas(aux):
     cant = cantidadReservas(aux)
 
-    for i in range(cant):
-        for j in range(0, cant - i - 1):
+    for i in range(cant):                           #recorre toda la agenda y por cada reserva compara su fecha con la siguiente, hace eso mismo la cantidad de reservas que haya en la agenda
+        for j in range(0, cant - i - 1):            #recorre hasta la penultima y a esa le resta la cantidad de veces que ya hizo el proceso para no volver a comparar las que ya quedaron ordenadas
             r1 = recuperarReserva(aux, j)
             r2 = recuperarReserva(aux, j+1)
 
