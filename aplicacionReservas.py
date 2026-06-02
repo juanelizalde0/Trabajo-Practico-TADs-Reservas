@@ -1,6 +1,6 @@
 from TADReservas import *   
-from TADAgenda import *
-from funcionesReservas import * 
+from TADAgenda import*
+from funcionesReservas import* 
 agenda=crearAgenda()
 while True:
     print("1. Alta de reserva")
@@ -54,13 +54,20 @@ while True:
             print(f"\nSe cancelo la reserva: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}")
             eliminarReserva(agenda,r)
         case 4:
-            agendaaux=agenda.copy()
-            agendaaux=ordenarFechas(agendaaux)
+            agendaaux=agenda.copy()                             #con esta copia no modifico la agenda original
+            agendaaux=ordenarFechas(agendaaux)                  #la ordeno en una auxiliar y la imprimo ordenada
             print("\nLISTADO GENERAL DE RESERVAS ORDENADO POR FECHA: \nACTIVIDAD | PRIORIDAD | FECHA\n")
-            for i in range (0,cant):
-                r=recuperarReserva(agendaaux,i)
-                print(f"{verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}\n")    
-            
+            imprimirReservas(agendaaux)
+        case 5:
+            opt=input("A.Trasladar reservas\nB.Cancelar reservas\n").lower()
+            if opt=='a': 
+                f,fN= cargarFecha2(agenda,'trasladar')
+                trasladarFecha(agenda,f,fN)
+                print("\nReservas trasladadas\n")
+            elif opt=='b':
+                f=cargarFecha2(agenda,"cancelar")
+                cancelarFecha(agenda,f)
+                print("\nReservas canceladas\n")
     
 
         

@@ -2,12 +2,16 @@ from datetime import date,datetime,timedelta
 from TADReservas import *
 from TADAgenda import *
 
-def recorrerFecha(agenda,cant,f):          #recorre la agenda buscando una reserva con la misma fecha que se le dio, si la encuentra devuelve esa reserva, sino devuelve None
+def recorrerFecha(agenda,cant,f,opcion):          #recorre la agenda buscando una reserva con la misma fecha que se le dio, si la encuentra devuelve esa reserva, sino devuelve None
     for i in range (0,cant):
         r=recuperarReserva(agenda,i)
-        if(f==verFecha(r)):  
-            return r                       #devuelve la reserva (r) si encuentra una reserva con la misma fecha (f) que se le dio
-    return None                            #devuelve None si no hay ninguna reserva con esa fecha en el sistema
+        if(opcion=="fecha completa"):
+            if(f==verFecha(r)):  
+                return r                           #devuelve la reserva (r) si encuentra una reserva con la misma fecha(con hora) (f) que se le dio
+        elif(opcion=="Solo dia"):                     
+            if(f.date()==verFecha(r).date()):
+                return r                            #devuelve la reserva (r) si encuentra una reserva con wl mismo dia/mes/año (f) que se le dio
+    return None                                     #devuelve None si no hay ninguna reserva con esa fecha en el sistema
 
 def cargarDatos():                              #separe el cargar datos de cargar fecha para simplificar a la hora de llamar desde la main
     act=input("\nActividad de la reserva: ")
@@ -25,7 +29,7 @@ def cargarFecha(agenda,modo):           #pide al usuario que ingrese una fecha, 
         fecha=datetime(anio,mes,dia,hora,minuto)
         
         cant = cantidadReservas(agenda)
-        r = recorrerFecha(agenda, cant, fecha)          
+        r = recorrerFecha(agenda, cant, fecha, "fecha completa")          
         if modo == 'nueva':                         #si en el main le doy el modo 'nueva' es porque es una fecha que quiero cargar, y no modificar o eliminar
             if r is None:                           #para cargarla se tiene que fijar si esa fecha ya esta reservada, recorrerFecha devuelve None es porque no hay ninguna reserva con esa fecha
                 return fecha                        #entonces devuelve la fecha para ya asi cargar la reserva con esa
@@ -47,8 +51,57 @@ def ordenarFechas(aux):
 
             if verFecha(r1) > verFecha(r2):
                 aux[j], aux[j+1] = aux[j+1], aux[j]
-
     return aux
-                 
+
+def imprimirReservas(agendaaux):
+    cant=cantidadReservas(agendaaux)
+    for i in range (0,cant):
+        r=recuperarReserva(agendaaux,i)
+        print(f"{verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}\n")    
+
+def cargarFecha2(agenda, modo):
+    while True:
+        dia=int(input("Dia:"))
+        mes=int(input("Mes:"))
+        anio=int(input("Año:"))
+        fecha=datetime(anio, mes, dia)
+
+        cant = cantidadReservas(agenda)
+        r = recorrerFecha(agenda, cant, fecha, "Solo dia")         #recorro la agenda buscando una reserva con ese dia/mes/anio, si la encuentra devuelve esa reserva, sino devuelve None
         
+        if modo=='trasladar':
+            if r is None:
+                print("\nLa fecha no se encuentra en nuestro sistema, ingresa otra\n")
+            else:
+                print(f"Fecha |{verFecha(r).date()}| encontrada en la agenda.")
+                print("Ingrese la nueva fecha a la que desea trasladar las reservas")
+                dia=int(input("Dia:"))
+                mes=int(input("Mes:"))
+                anio=int(input("Año:"))
+                fechanueva=datetime(anio, mes, dia)
+                return fecha, fechanueva
+
+        elif modo=='cancelar':
+            if r is None:
+                print("\nLa fecha no se encuentra en nuestro sistema, ingresa otra\n")
+            else: 
+                print(f"Fecha |{verFecha(r).date()}| encontrada en la agenda.")
+                return fecha
+
+def trasladarFecha(agenda, f, fN):
+    cant=cantidadReservas(agenda)
+    for i in range (cant):
+        r=recuperarReserva(agenda, i)
+        if verFecha(r).date()==f.date():
+            hora=verFecha(r).time()
+            fechaCompletaN=datetime.combine(fN.date(), hora)
+            modFecha(r, fechaCompletaN)
+
+def cancelarFecha(agenda, f):
+    agendaux=agenda.copy()   
+    cant=cantidadReservas(agendaux)                          #con esta copia no modifico la agenda original
+    for i in range (cant):                                   #al recorrer con una agende auxiliar, no se modifica la cantidad del for ni el orden. entonces no se rompe
+            r=recuperarReserva(agendaux, i)                  #al eliminar reservas de la original, voy as eguir el recorrido y no voy a saltearme ninuna posicion
+            if verFecha(r).date()==f.date():
+                eliminarReserva(agenda, r)
     
