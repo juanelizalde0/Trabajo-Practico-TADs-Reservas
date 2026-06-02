@@ -1,6 +1,7 @@
 from TADReservas import *   
 from TADAgenda import*
 from funcionesReservas import* 
+from TADCola import* 
 agenda=crearAgenda()
 while True:
     print("1. Alta de reserva")
@@ -27,26 +28,26 @@ while True:
             r=cargarFecha(agenda,'existente')                    #ya aca recibe la reserva entonces no hace falta volver a recuperarla.
             mod=input("\nQue desea modificar? (todo - actividad - prioridad - fecha): ").lower()
             if(mod == 'todo'):
-                print(f"\nReserva actual: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}")
+                imprimirDatos(r,'actual')
                 act,p=cargarDatos()
                 f=cargarFecha(agenda,'nueva')
                 modReserva(r,act,p,f)
-                print(f"\nReserva modificada: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}\n")
+                imprimirDatos(r,'modificada')
             elif(mod=='actividad'):
-                print(f"\nReserva actual: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}")
+                imprimirDatos(r,'actual')
                 act=input("Ingrese la nueva actividad: ")
                 modAct(r,act)
-                print(f"\nReserva modificada: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}\n")
+                imprimirDatos(r,'modificada')
             elif(mod=='prioridad'):
-                print(f"\nReserva actual: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}")
+                imprimirDatos(r,'actual')
                 p=input("Ingrese la nueva prioridad: ")
                 modPrior(r,p)
-                print(f"\nReserva modificada: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}\n")
+                imprimirDatos(r,'modificada')
             elif(mod=='fecha'):
-                print(f"\nReserva actual: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}")
+                imprimirDatos(r,'actual')
                 f=cargarFecha(agenda,'nueva')
                 modFecha(r,f)  
-                print(f"\nReserva modificada: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}\n")
+                imprimirDatos(r,'modificada')
         case 3: 
             cant=cantidadReservas(agenda)
             print("\nIngrese la fecha de la reserva que desea cancelar:\n")
@@ -56,7 +57,7 @@ while True:
         case 4:
             agendaaux=agenda.copy()                             #con esta copia no modifico la agenda original
             agendaaux=ordenarFechas(agendaaux)                  #la ordeno en una auxiliar y la imprimo ordenada
-            print("\nLISTADO GENERAL DE RESERVAS ORDENADO POR FECHA: \nACTIVIDAD | PRIORIDAD | FECHA\n")
+            print("\n-------------------LISTADO GENERAL DE RESERVAS ORDENADO POR FECHA------------------- \nACTIVIDAD | PRIORIDAD | FECHA\n")
             imprimirReservas(agendaaux)
         case 5:
             opt=input("A.Trasladar reservas\nB.Cancelar reservas\n").lower()
@@ -68,6 +69,15 @@ while True:
                 f=cargarFecha2(agenda,"cancelar")
                 cancelarFecha(agenda,f)
                 print("\nReservas canceladas\n")
+        case 6: 
+            print("\nIngrese una fecha para generar la hoja de ruta: ")
+            f=cargarFecha2(agenda,'existente')                              #cargo y verifico con la funcion
+            cola=encolarFecha(agenda,f)                                     #encolo todas las de la fecha   
+            cola=ordenarCola(cola)                                          #funcion para ordenar por prioridad la cola
+            escribirCola(cola,f)      
+        case 0:
+            break
+                                      
     
 
         
