@@ -2,21 +2,23 @@ from datetime import date,datetime,timedelta
 from TADReservas import *
 from TADAgenda import *
 from TADCola import*
+from tabulate import*
+import subprocess
 
 
-def recorrerFecha(agenda,cant,f,opcion):          #recorre la agenda buscando una reserva con la misma fecha que se le dio, si la encuentra devuelve esa reserva, sino devuelve None
+def recorrerFecha(agenda,cant,f,modo):          #recorre la agenda buscando una reserva con la misma fecha que se le dio, si la encuentra devuelve esa reserva, sino devuelve None
     for i in range (0,cant):
         r=recuperarReserva(agenda,i)
-        if opcion=="fecha completa":
+        if modo=="fecha completa":
             if f==verFecha(r):  
                 return r                           #devuelve la reserva (r) si encuentra una reserva con la misma fecha(con hora) (f) que se le dio
-        elif opcion=="Solo dia":                     
+        elif modo=="Solo dia":                     
             if(f.date()==verFecha(r).date()):
-                return r                            #devuelve la reserva (r) si encuentra una reserva con wl mismo dia/mes/año (f) que se le dio
+                return r                            #devuelve la reserva (r) si encuentra una reserva con el mismo dia/mes/año (f) que se le dio
     return None                                     #devuelve None si no hay ninguna reserva con esa fecha en el sistema
 
 def cargarDatos():                              #separe el cargar datos de cargar fecha para simplificar a la hora de llamar desde la main
-    act=input("\nActividad de la reserva: ")
+    act=input("Actividad de la reserva: ")
     p=input("Nivel de prioridad (normal, socio, torneo): ").lower()
 
     return act, p
@@ -54,11 +56,18 @@ def ordenarFechas(aux):
                 aux[j], aux[j+1] = aux[j+1], aux[j]
     return aux
 
-def imprimirReservas(agendaaux):
+def imprimirReservas(agendaaux,modo):
+    encabezado=["\033[1mACTIVIDAD\033[0m" , "\033[1mPRIORIDAD\033[0m" , "\033[1mAAAA/MM/DD HH:MM\033[0m"]
+    datos=[]
     cant=cantidadReservas(agendaaux)
-    for i in range (0,cant):
+    if modo=='mod':
+        print("\nReserva modificada con exito...\n")
+    for i in range (cant):
         r=recuperarReserva(agendaaux,i)
-        print(f"{verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}\n")    
+        datos.append([verActividad(r) , verPrioridad(r) , verFecha(r)])  
+
+    tabla=tabulate(datos,headers=encabezado, tablefmt="fancy_grid")  
+    print(tabla)
 
 def cargarFecha2(agenda, modo):
     while True:
@@ -72,9 +81,9 @@ def cargarFecha2(agenda, modo):
         
         if modo=='trasladar':
             if r is None:
-                print("\nLa fecha no se encuentra en nuestro sistema, ingresa otra\n")
+                print("\nLa fecha no se encuentra en nuestra agenda, ingresa otra\n")
             else:
-                print(f"Fecha |{verFecha(r).date()}| encontrada en la agenda.")
+                print("\nFecha encontrada en la agenda\n")
                 print("Ingrese la nueva fecha a la que desea trasladar las reservas")
                 dia=int(input("Dia:"))
                 mes=int(input("Mes:"))
@@ -86,7 +95,7 @@ def cargarFecha2(agenda, modo):
             if r is None:
                 print("\nLa fecha no se encuentra en nuestro sistema, ingresa otra\n")
             else: 
-                print(f"Fecha |{verFecha(r).date()}| encontrada en la agenda.")
+                print("\nFecha encontrada en la agenda y cancelada con exito...\n")
                 return fecha
         elif modo=='existente':
             if r is None:
@@ -111,11 +120,6 @@ def cancelarFecha(agenda, f):
             r=recuperarReserva(agendaux, i)                  #al eliminar reservas de la original, voy a seguir el recorrido por la auxiliar y no voy a saltearme ninguna posicion
             if verFecha(r).date()==f.date():
                 eliminarReserva(agenda, r)
-def imprimirDatos(r,modo):                                  #esta funcion esta hecha para optimizar el codigo y repetir lo mismo tantas veces
-    if modo=='modificada':
-        print(f"\nReserva modificada: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}\n")
-    elif modo=='actual':
-        print(f"\nReserva actual: {verActividad(r)} | {verPrioridad(r)} | {verFecha(r)}\n")
 
 def encolarFecha(agenda,f):
     cant=cantidadReservas(agenda)
@@ -161,3 +165,5 @@ def escribirCola(cola,f):
         actividad, prioridad=desencolar(cola)
         print(f"{actividad} | {prioridad}\n")
         
+def limpiarPantalla():
+    subprocess.run("cls" ,shell=True)
