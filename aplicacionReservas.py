@@ -106,6 +106,7 @@ while True:
             f=cargarFecha2(agenda,'existente')                              #cargo y verifico con la funcion
             cola=encolarFecha(agenda,f)                                     #encolo todas las de la fecha   
             cola=ordenarCola(cola)                                          #funcion para ordenar por prioridad la cola
+            limpiarPantalla()                                                
             escribirCola(cola,f)    
 
         case 0:

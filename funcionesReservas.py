@@ -3,7 +3,7 @@ from TADReservas import *
 from TADAgenda import *
 from TADCola import*
 from tabulate import*
-import subprocess
+import subprocess       #para limpiar pantalla
 
 
 def recorrerFecha(agenda,cant,f,modo):          #recorre la agenda buscando una reserva con la misma fecha que se le dio, si la encuentra devuelve esa reserva, sino devuelve None
@@ -160,10 +160,14 @@ def ordenarCola(cola):
     return cola
 
 def escribirCola(cola,f):
-    print("\n-------------------HOJA DE RUTA PARA EL DIA",f.date(),"-------------------\n")
+    print(f"\033[1mHOJA DE RUTA PARA EL DIA: ({f})\033[0m")
+    encabezado= ["\033[1mACTIVIDAD\033[0m" , "\033[1mPRIORIDAD\033[0m"]
+    datos=[]
     while not esVacia(cola): 
         actividad, prioridad=desencolar(cola)
-        print(f"{actividad} | {prioridad}\n")
-        
+        datos.append([actividad , prioridad])
+    tabla=tabulate(datos, headers=encabezado, tablefmt="fancy_grid")
+    print(tabla)
+
 def limpiarPantalla():
     subprocess.run("cls" ,shell=True)
